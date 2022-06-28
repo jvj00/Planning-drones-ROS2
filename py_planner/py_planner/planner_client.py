@@ -4,7 +4,9 @@ from planner_interface.srv import MsgJson
 import rclpy
 from rclpy.node import Node
 
-path_json="/home/drone/dev_ws/src/py_planner/py_planner/demo.json"
+## PATH VARIABLE ##
+path_extern="/home/drone/dev_ws/src/py_planner/extern"
+path_json=path_extern+"/demo.json"
 
 class MinimalClientAsync(Node):
 
