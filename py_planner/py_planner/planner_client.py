@@ -4,6 +4,7 @@ from planner_interface.srv import MsgJson
 import rclpy
 from rclpy.node import Node
 
+path_json="/home/drone/dev_ws/src/py_planner/py_planner/demo.json"
 
 class MinimalClientAsync(Node):
 
@@ -23,7 +24,7 @@ class MinimalClientAsync(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    f = open("/home/drone/dev_ws/src/files/demofile.txt", "r")
+    f = open(path_json, "r")
     json=f.read()
     minimal_client = MinimalClientAsync()
     response = minimal_client.send_request(json)
