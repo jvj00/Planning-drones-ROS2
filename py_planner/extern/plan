@@ -1,0 +1,43 @@
+#!/usr/bin/perl -w
+
+if ((scalar @ARGV) != 4) {
+	print "Usage: plan <path_to_popf> <domain> <problem> <solution>\n";
+	exit(1);
+}
+
+$popf = shift @ARGV;
+$dom = shift @ARGV;
+$prob = shift @ARGV;
+$soln = shift @ARGV;
+
+if (!(-e $dom)) {
+	print "Domain file $dom not found\n";
+	exit(1);
+}
+
+if (!(-e $prob)) {
+        print "Problem file $prob not found\n";
+        exit(1);
+}
+
+open IN, "$popf -I -n $dom $prob |";
+
+$solnfile = 1;
+while (<IN>) {
+	if (m/; Plan found/) {
+		open OUT, "> $soln.$solnfile";
+		print OUT;
+		while (<IN>) {
+			if (m/./) {
+				open OUT, ">> $soln.$solnfile";
+				print OUT;
+				close OUT;
+			} else {
+				last;
+			}
+		}
+		close OUT;
+		++$solnfile;
+	}
+}
+close IN;
