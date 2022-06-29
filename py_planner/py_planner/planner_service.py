@@ -9,6 +9,9 @@ from subprocess import Popen, PIPE
 import time
 import math
 
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
 ## INPUT FIXED VARIABLE ##
 LEVELS = 3
 DISTANCE_LEVELS = 30
@@ -34,6 +37,12 @@ def min_distance(targets, point):
                 min_target=target
         return min_target
 
+def construct_map():
+    fig = plt.figure(figsize=(4,4))
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(2,3,4) # plot the point (2,3,4) on the figure
+    plt.show()
+
 class Service(Node):
 
     def __init__(self):
@@ -41,6 +50,9 @@ class Service(Node):
         self.srv = self.create_service(MsgJson, 'plan', self.callback)
 
     def callback(self, request, response):
+        
+        construct_map()
+
         ## Load JSON
         input = json.loads(request.in_json)
         
