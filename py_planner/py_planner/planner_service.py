@@ -109,6 +109,7 @@ class Service(Node):
                 element_point=[point for point in points["points"] if point['name']==words[2]][0]
                 dict["x"]=element_point["x"]
                 dict["y"]=element_point["y"]
+                dict["z"]=element_point["z"]
             if(words[0]=="takeoff"):
                 dict["action"]=3
                 dict["drone"]=words[1]
