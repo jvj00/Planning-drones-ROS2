@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import json
+import time
 
 path_extern="/home/drone/dev_ws/src/py_planner/extern"
 path_json=path_extern+"/map_files/points.json"
@@ -48,6 +49,9 @@ ax.set_zlabel("height (m)")
 ax.grid(False)
 ax.scatter(x_drones,y_drones,z_drones)
 ax.scatter(x_agv,y_agv,z_agv,c="green")
+print("go1")
+time.sleep(3)
+print("go2")
 for i in range(len(link_start_x_agv)):
     ax.plot([link_start_x_agv[i],link_end_x_agv[i]],[link_start_y_agv[i],link_end_y_agv[i]],zs=[link_start_z_agv[i],link_end_z_agv[i]], color='green', linewidth=0.3, linestyle='dotted')
 plt.show()
