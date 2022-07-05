@@ -6,7 +6,9 @@ from rclpy.node import Node
 
 ## PATH VARIABLE ##
 path_extern="/home/drone/dev_ws/src/py_planner/extern"
-path_json=path_extern+"/demo.json"
+path_json_go=path_extern+"/demo/demo_go.json"
+path_json_ret=path_extern+"/demo/demo_ret.json"
+path_client_result=path_extern+"/demo/client_result.json"
 
 class MinimalClientAsync(Node):
 
@@ -26,11 +28,17 @@ class MinimalClientAsync(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    f = open(path_json, "r")
+    if(sys.argv[1] is not None and sys.argv[1]=="return"):
+        f = open(path_json_ret, "r")
+    else:
+        f = open(path_json_go, "r")
     json=f.read()
+    f.close()
     minimal_client = MinimalClientAsync()
     response = minimal_client.send_request(json)
     minimal_client.get_logger().info(response.out_json)
+    f = open(path_client_result, "w")
+    f.write(response.out_json)
 
     minimal_client.destroy_node()
     rclpy.shutdown()

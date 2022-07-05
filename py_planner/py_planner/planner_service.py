@@ -38,7 +38,7 @@ def min_distance(targets, point):
                 min_target=target
         return min_target
 
-def construct_map(actions, pos_agv_x, pos_agv_y):
+def construct_map(actions, pos_agv_x, pos_agv_y, pos_drones):
     f_points = open(path_json)
     f_links = open(path_links)
     points = json.loads(f_points.read())
@@ -94,14 +94,24 @@ def construct_map(actions, pos_agv_x, pos_agv_y):
             if dist < dist_min:
                 dist_min=dist
                 prev_pos_agv_z=p["z"]
-    prev_pos_d1_x=prev_pos_agv_x
-    prev_pos_d1_y=prev_pos_agv_y
-    prev_pos_d1_z=prev_pos_agv_z
-    prev_pos_d2_x=prev_pos_agv_x
-    prev_pos_d2_y=prev_pos_agv_y
-    prev_pos_d2_z=prev_pos_agv_z
-    d1_agv=True
-    d2_agv=True
+    if pos_drones is None:
+        prev_pos_d1_x=prev_pos_agv_x
+        prev_pos_d1_y=prev_pos_agv_y
+        prev_pos_d1_z=prev_pos_agv_z
+        prev_pos_d2_x=prev_pos_agv_x
+        prev_pos_d2_y=prev_pos_agv_y
+        prev_pos_d2_z=prev_pos_agv_z
+        d1_agv=True
+        d2_agv=True
+    else:
+        prev_pos_d1_x=pos_drones[0]["x"]
+        prev_pos_d1_y=pos_drones[0]["y"]
+        prev_pos_d1_z=pos_drones[0]["z"]
+        prev_pos_d2_x=pos_drones[1]["x"]
+        prev_pos_d2_y=pos_drones[1]["y"]
+        prev_pos_d2_z=pos_drones[1]["z"]
+        d1_agv=False
+        d2_agv=False
     
     for a in actions:
         if a["drone"]=="d1":
@@ -154,13 +164,28 @@ class Service(Node):
         input = json.loads(request.in_json)
         
         ## Generate map_tool command & Call map_tool
-        map_tool_request = "--pddl "+path_problem+" --json "+path_json+" "+" --links "+path_links+" "
+        if "targets" in input:
+            ret_drones=False
+            map_tool_request=""
+        elif "drones" in input:
+            ret_drones=True
+            map_tool_request="--return "
+        else:
+            response.out_json = "None"
+            return response
+
+        map_tool_request+= "--pddl "+path_problem+" --json "+path_json+" "+" --links "+path_links+" "
         map_tool_request+= str(int(input["sizes"]["height"]/input["sensibility"]))+" "+str(int(input["sizes"]["width"]/input["sensibility"]))+" "+str(LEVELS)+" "
         map_tool_request+= str(input["sensibility"])+" "+str(DISTANCE_LEVELS)+" "+str(LOWEST_LEVEL)+" "
         map_tool_request+= str(input["pos_agv"]["x"])+" "+str(input["pos_agv"]["y"])+" "
         map_tool_request+= str(input["coordinates"]["lat"])+" "+str(input["coordinates"]["lon"])
-        for target in input["targets"]:
-            map_tool_request+=" "+str(target["x"])+" "+str(target["y"])+" "+str(target["z"])
+        if ret_drones:
+            for drone in input["drones"]:
+                map_tool_request+=" "+str(drone["x"])+" "+str(drone["y"])+" "+str(drone["z"])
+        else:
+            for target in input["targets"]:
+                map_tool_request+=" "+str(target["x"])+" "+str(target["y"])+" "+str(target["z"])
+        
         ret = os.system(path_map_tool+" "+map_tool_request)
         if(ret!=0):
             response.out_json = "None"
@@ -217,7 +242,7 @@ class Service(Node):
             if(words[0]=="landing"):
                 dict["action"]=4
                 dict["drone"]=words[1]
-                element_point=[point for point in points["points"] if point['name']==words[3]][0]
+                element_point=[point for point in points["points"] if point['name']==words[2]][0]
                 dict["x"]=element_point["x"]
                 dict["y"]=element_point["y"]
                 dict["z"]=element_point["z"]
@@ -244,7 +269,10 @@ class Service(Node):
 
         ## If GUI, construct and show map
         if input["gui"]=="true":
-            construct_map(actions["actions"], input["pos_agv"]["x"], input["pos_agv"]["y"])
+            if ret_drones:
+                construct_map(actions["actions"], input["pos_agv"]["x"], input["pos_agv"]["y"], input["drones"])
+            else:
+                construct_map(actions["actions"], input["pos_agv"]["x"], input["pos_agv"]["y"], None)
 
         ## Remove files & return response
         os.remove(path_problem)
