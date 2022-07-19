@@ -28,7 +28,7 @@ class MinimalClientAsync(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    if(sys.argv[1] is not None and sys.argv[1]=="return"):
+    if(len(sys.argv)==2 and sys.argv[1]=="return"):
         f = open(path_json_ret, "r")
     else:
         f = open(path_json_go, "r")

@@ -117,7 +117,7 @@ def construct_map(actions, pos_agv_x, pos_agv_y, pos_drones):
         if a["drone"]=="d1":
             ax.plot([prev_pos_d1_x,a["x"]],[prev_pos_d1_y,a["y"]],zs=[prev_pos_d1_z,a["z"]], color="blue", linewidth=2)
             if a["action"]==5:
-                ax.scatter(a["x"],a["y"],a["z"],c="blue",marker="x",s=60)
+                ax.scatter(a["x"],a["y"],a["z"],c="orange",marker="x",s=60)
             prev_pos_d1_x=a["x"]
             prev_pos_d1_y=a["y"]
             prev_pos_d1_z=a["z"]
@@ -128,7 +128,7 @@ def construct_map(actions, pos_agv_x, pos_agv_y, pos_drones):
         elif a["drone"]=="d2":
             ax.plot([prev_pos_d2_x,a["x"]],[prev_pos_d2_y,a["y"]],zs=[prev_pos_d2_z,a["z"]], color="red", linewidth=2)
             if a["action"]==5:
-                ax.scatter(a["x"],a["y"],a["z"],c="red",marker="x",s=60)
+                ax.scatter(a["x"],a["y"],a["z"],c="orange",marker="x",s=60)
             prev_pos_d2_x=a["x"]
             prev_pos_d2_y=a["y"]
             prev_pos_d2_z=a["z"]

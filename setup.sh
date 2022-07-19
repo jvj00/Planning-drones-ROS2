@@ -8,4 +8,6 @@ change_to="path_extern=\"$(pwd)/py_planner/extern\""
 echo $change_to
 sed -i "s+$change_from+$change_to+" py_planner/py_planner/planner_service.py
 sed -i "s+$change_from+$change_to+" py_planner/py_planner/planner_client.py
+echo "Installing correct setup tools from pip..."
+pip install setuptools==58.2.0
 echo "Done!"
