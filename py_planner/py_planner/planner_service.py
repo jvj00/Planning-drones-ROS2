@@ -29,14 +29,25 @@ path_popf=path_extern+"/popf/popf2/popf3-clp"
 path_solutions=path_extern+"/solutions"
 
 def min_distance(targets, point):
-        dist_min=99999999
-        min_target=None
-        for target in targets:
-            dist=math.sqrt(math.pow(target["x"]-point["x"],2)+math.pow(target["y"]-point["y"],2)+math.pow(target["z"]-point["z"],2))
+    dist_min=99999999
+    min_target=None
+    for target in targets:
+        dist=math.sqrt(math.pow(target["x"]-point["x"],2)+math.pow(target["y"]-point["y"],2)+math.pow(target["z"]-point["z"],2))
+        if dist<dist_min:
+            dist_min=dist
+            min_target=target
+    return min_target
+
+def min_distance_agv(points, agv_x, agv_y):
+    dist_min=99999999
+    min_point=None
+    for p in points:
+        if "pagv" in p["name"]:
+            dist=math.sqrt(math.pow(p["x"]-agv_x,2)+math.pow(p["y"]-agv_y,2))
             if dist<dist_min:
                 dist_min=dist
-                min_target=target
-        return min_target
+                min_point=p
+    return min_point
 
 def construct_map(actions, pos_agv_x, pos_agv_y, pos_drones):
     f_points = open(path_json)
@@ -179,6 +190,7 @@ class Service(Node):
         map_tool_request+= str(input["sensibility"])+" "+str(DISTANCE_LEVELS)+" "+str(LOWEST_LEVEL)+" "
         map_tool_request+= str(input["pos_agv"]["x"])+" "+str(input["pos_agv"]["y"])+" "
         map_tool_request+= str(input["coordinates"]["lat"])+" "+str(input["coordinates"]["lon"])
+
         if ret_drones:
             for drone in input["drones"]:
                 map_tool_request+=" "+str(drone["x"])+" "+str(drone["y"])+" "+str(drone["z"])
@@ -208,6 +220,11 @@ class Service(Node):
         f_sol = open(path_solutions+'/'+os.listdir(path_solutions)[len(os.listdir(path_solutions))-1], "r")
         f_points = open(path_json)
         points = json.loads(f_points.read())
+        if ret_drones:
+            pos_agv_x = input["pos_agv"]["x"]
+            pos_agv_y = input["pos_agv"]["y"]
+            pos_agv_z = min_distance_agv(points["points"], input["pos_agv"]["x"], input["pos_agv"]["y"])["z"]
+
         for line in f_sol:
             if line.startswith(";"):
                 continue
@@ -229,9 +246,9 @@ class Service(Node):
             if(words[0]=="move_agv"):
                 dict["action"]=2
                 element_point=[point for point in points["points"] if point['name']==words[2]][0]
-                dict["x"]=element_point["x"]
-                dict["y"]=element_point["y"]
-                dict["z"]=element_point["z"]
+                pos_agv_x=dict["x"]=element_point["x"]
+                pos_agv_y=dict["y"]=element_point["y"]
+                pos_agv_z=dict["z"]=element_point["z"]
             if(words[0]=="takeoff"):
                 dict["action"]=3
                 dict["drone"]=words[1]
@@ -240,12 +257,12 @@ class Service(Node):
                 dict["y"]=element_point["y"]
                 dict["z"]=element_point["z"]
             if(words[0]=="landing"):
+                #with reposition in right place
                 dict["action"]=4
                 dict["drone"]=words[1]
-                element_point=[point for point in points["points"] if point['name']==words[2]][0]
-                dict["x"]=element_point["x"]
-                dict["y"]=element_point["y"]
-                dict["z"]=element_point["z"]
+                dict["x"]=pos_agv_x
+                dict["y"]=pos_agv_y
+                dict["z"]=pos_agv_z
             if(words[0]=="take_picture"):
                 #with reposition in right place
                 dict["action"]=5
