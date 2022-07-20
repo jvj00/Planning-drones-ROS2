@@ -11,7 +11,7 @@ A service for ROS2 to generate real discrete map, plan a path for 2 drones to ta
  ## Requirements
  * Ubuntu Linux OS
  * [ROS 2 Foxy](https://docs.ros.org/en/foxy/index.html)
- * [CbC](https://github.com/coin-or/Cbc): installation integrated in setup.sh
+ * [CbC](https://github.com/coin-or/Cbc) : installation integrated in setup.sh
  ## Installation
  1. Make a workspace directory in home directory as `~/dev_ws`
  2. Clone this project in the directory just created with command `git clone https://github.com/jvj00/Planning-drones-ROS2.git`
