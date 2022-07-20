@@ -14,11 +14,34 @@ A service for ROS2 to generate real discrete map, plan a path for 2 drones to ta
  * [CbC](https://github.com/coin-or/Cbc) : installation integrated in setup.sh
  ## Installation
  1. Make a workspace directory in home directory as `~/dev_ws`
- 2. Clone this project in the directory just created with command `git clone https://github.com/jvj00/Planning-drones-ROS2.git`
- 3. Enter the directory just downloaded and execute command `sudo bash setup.sh`
+ 2. Clone this project in the directory just created with command 
+ ```
+ git clone https://github.com/jvj00/Planning-drones-ROS2.git
+ ```
+ 3. Enter the directory just downloaded and execute command 
+ ```
+ sudo bash setup.sh
+ ```
  ## Running
- 1. Build from your workspace (e.g. `~/dev_ws`) using `colcon build`
- 2. Execute command `source install/setup.bash`
- 3. Run the service typing `ros2 run py_planner service`, and if you want you can test it with demo client `ros2 run py_planner client` or `ros2 run py_planner client return` for the 'return to agv' service
+ 1. Build from your workspace (e.g. `~/dev_ws`) using 
+ ```
+ colcon build
+ ```
+ 2. Execute command 
+ ```
+ source install/setup.bash
+ ```
+ 3. Run the service typing
+ ```
+ ros2 run py_planner service
+ ```
+ and if you want you can test it with demo client 
+ ```
+ ros2 run py_planner client
+ ```
+ or, for the 'return to agv' service,
+ ```
+ ros2 run py_planner client return
+ ```
  ## Contributors
  [jvj00](https://github.com/jvj00)
