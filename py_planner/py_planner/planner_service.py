@@ -171,6 +171,10 @@ class Service(Node):
 
     def callback(self, request, response):
 
+        ## Pre Operations to avoid conflicts
+        for file in os.listdir(path_solutions):
+            os.remove(path_solutions+'/'+file)
+
         ## Load JSON
         input = json.loads(request.in_json)
         
@@ -220,10 +224,10 @@ class Service(Node):
         f_sol = open(path_solutions+'/'+os.listdir(path_solutions)[len(os.listdir(path_solutions))-1], "r")
         f_points = open(path_json)
         points = json.loads(f_points.read())
-        if ret_drones:
-            pos_agv_x = input["pos_agv"]["x"]
-            pos_agv_y = input["pos_agv"]["y"]
-            pos_agv_z = min_distance_agv(points["points"], input["pos_agv"]["x"], input["pos_agv"]["y"])["z"]
+
+        pos_agv_x = input["pos_agv"]["x"]
+        pos_agv_y = input["pos_agv"]["y"]
+        pos_agv_z = min_distance_agv(points["points"], input["pos_agv"]["x"], input["pos_agv"]["y"])["z"]
 
         for line in f_sol:
             if line.startswith(";"):
