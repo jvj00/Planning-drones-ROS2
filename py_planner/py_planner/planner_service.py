@@ -29,6 +29,12 @@ path_popf=path_extern+"/popf/popf2/popf3-clp"
 path_solutions=path_extern+"/solutions"
 
 def min_distance(targets, point):
+    """Compute minimum distance between all target and a point. It returns the nearest discrete target.
+    
+    Keyword arguments:
+    targets -- list of dictionaries containing all targets (required)
+    point -- point in continous space from which the nearest target will be computed (required)
+    """
     dist_min=99999999
     min_target=None
     for target in targets:
@@ -39,6 +45,13 @@ def min_distance(targets, point):
     return min_target
 
 def min_distance_agv(points, agv_x, agv_y):
+    """Compute minimum distance between all points_agv and agv. It returns the nearest point in discrete map.
+    
+    Keyword arguments:
+    points -- list of dictionaries containing all points where agv can move (required)
+    agv_x -- x position of agv (required)
+    agv_y -- y position of agv (required)
+    """
     dist_min=99999999
     min_point=None
     for p in points:
@@ -50,6 +63,14 @@ def min_distance_agv(points, agv_x, agv_y):
     return min_point
 
 def construct_map(actions, pos_agv_x, pos_agv_y, pos_drones):
+    """Draws and shows a map of point with the path that 2 drones and agv have to follow.
+    
+    Keyword arguments:
+    actions -- list of actions, that are a dictionary, that system have to follow (required)
+    pos_agv_x --  x initial position of agv (required)
+    pos_agv_y --  y initial position of agv (required)
+    pos_drones --  list of drones positions, that are a dictionary (optional, insert None if they are on agv)
+    """
     f_points = open(path_json)
     f_links = open(path_links)
     points = json.loads(f_points.read())
@@ -170,6 +191,13 @@ class Service(Node):
         self.srv = self.create_service(MsgJson, 'plan', self.callback)
 
     def callback(self, request, response):
+        """Callback service: the input is composed by information to construct map and mission, the output is a list of actions that system have to perform.
+        This method is self-called when the ros2 service is triggered.
+        
+        Keyword arguments:
+        request.in_json -- A JSON string where there are all information about map and mission (see py_planner/extern/demo/demo_go.json and py_planner/extern/demo/demo_return.json for an example of a roundtrip)
+        response.out_json -- A JSON string containing a list of actions (see py_planner/extern/demo/client_result.json for an example and readme file for the meaning of actions)
+        """
 
         ## Pre Operations to avoid conflicts
         for file in os.listdir(path_solutions):
