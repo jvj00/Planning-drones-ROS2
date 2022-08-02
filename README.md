@@ -1,7 +1,7 @@
 # Planning-drones-ROS2
 ## Description
 A service for ROS2 to generate real discrete map, plan a path for 2 drones to take pictures in targets and return to agv, visualize it and translate into 5 simple actions.
-* <b>Message request:</b><br>A json file with parameters to generate a map: geocoordinates of points (0,0) bottom left, height & width, sensibility, agv position, drones or target positions (see demo files for more)
+* <b>Message request:</b><br>A json file with parameters to generate a map: geocoordinates of points (0,0) bottom left, height & width of the map in meters, sensibility in meters, agv position from origin in meters, drones or target positions from origin in meters (see demo files for more)
 * <b>Message response:</b><br>A json file with actions, x, y ,z in this format:
   * action 1: move drone in position x y z
   * action 2: move agv in position x y z
